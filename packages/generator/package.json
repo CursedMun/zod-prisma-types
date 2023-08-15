@@ -1,6 +1,6 @@
 {
-  "name": "@highglossy/zod-prisma-types",
-  "version": "1.0.0",
+  "name": "highglossy-zod-prisma-types",
+  "version": "1.0.1",
   "description": "It's not an official package",
   "author": "Chris Hörmann",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "url": "https://github.com/chrishoermann/zod-prisma-types.git"
   },
   "bin": {
-    "zod-prisma-types": "dist/bin.js"
+    "highglossy-zod-prisma-types": "dist/bin.js"
   },
   "scripts": {
     "lint": "eslint --ext ts,tsx,js,jsx --fix .",
