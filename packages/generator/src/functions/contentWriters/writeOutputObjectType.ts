@@ -53,7 +53,14 @@ export const writeOutputObjectType = (
       }
     }
   }
-
+  if (!field.argName || !field.argName.toLowerCase().includes('findmany')) {
+    return;
+  }
+  if (field.name.match(/updatetoone/gi)) {
+    return;
+  }
+  // console.log(field.name);
+  // console.log(field.argName);
   writer
     .blankLine()
     .write(`export const ${field.argName}Schema: `)
@@ -71,6 +78,9 @@ export const writeOutputObjectType = (
           `include: ${field.modelType}IncludeSchema.optional(),`,
         );
       field.args.forEach((arg) => {
+        if (arg.name === 'cursor' || arg.name === 'distinct') {
+          return;
+        }
         writer.write(`${arg.name}: `);
 
         const { isOptional, isNullable } = arg;

@@ -38,7 +38,6 @@ const writeInputTypeField = ({
   }
 
   writer.write(`${field.name}: `);
-
   if (field.hasMultipleTypes) {
     writer.write(`z.union([ `);
 

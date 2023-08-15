@@ -1,13 +1,13 @@
 import { FileWriter } from './classes';
 import {
+  writeSingleFileArgTypeStatements,
   writeSingleFileEnumStatements,
   writeSingleFileHelperStatements,
   writeSingleFileImportStatements,
-  writeSingleFileModelStatements,
-  writeSingleFileTypeStatements,
   writeSingleFileIncludeSelectStatements,
   writeSingleFileInputTypeStatements,
-  writeSingleFileArgTypeStatements,
+  writeSingleFileModelStatements,
+  writeSingleFileTypeStatements,
 } from './functions';
 import { CreateOptions } from './types';
 
