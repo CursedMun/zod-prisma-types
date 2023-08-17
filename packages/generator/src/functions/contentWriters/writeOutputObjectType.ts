@@ -63,8 +63,8 @@ export const writeOutputObjectType = (
   // console.log(field.argName);
   writer
     .blankLine()
-    .write(`export const ${field.argName}Schema: `)
-    .write(field.customArgType)
+    .write(`export const ${field.argName}Schema `)
+    // .write(field.customArgType)
     .write(` = `)
     .write(`z.object(`)
     .inlineBlock(() => {
