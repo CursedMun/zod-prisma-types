@@ -1,5 +1,6 @@
-import { PrismaVersionSchema } from '../utils';
 import { z } from 'zod';
+
+import { PrismaVersionSchema } from '../utils';
 
 ////////////////////////////////////////////////
 // SCHEMA
@@ -86,6 +87,12 @@ export const configSchema = z.object({
   inputTypePath: z.string().optional().default('inputTypeSchemas'), // currently only used internally
   outputTypePath: z.string().optional().default('outputTypeSchemas'), // currently only used internally
   prismaVersion: PrismaVersionSchema.optional(),
+  onlyModels: z
+    .string()
+    .optional()
+    .default('false')
+    .transform((val) => val === 'true'),
+  findFirst: z.string().optional().default('false'),
 });
 
 export type GeneratorConfig = z.infer<typeof configSchema>;

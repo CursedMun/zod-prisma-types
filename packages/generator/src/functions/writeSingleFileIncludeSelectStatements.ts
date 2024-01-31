@@ -1,11 +1,5 @@
 import { type WriteStatements } from '../types';
-import {
-  writeArgs,
-  writeCountArgs,
-  writeCountSelect,
-  writeInclude,
-  writeSelect,
-} from './contentWriters';
+import { writeArgs, writeInclude, writeSelect } from './contentWriters';
 
 /////////////////////////////////////////////////
 // FUNCTION
@@ -33,10 +27,10 @@ export const writeSingleFileIncludeSelectStatements: WriteStatements = (
       writeArgs({ fileWriter, dmmf }, model);
     }
 
-    if (model.writeCountArgs()) {
-      writeCountArgs({ fileWriter, dmmf }, model);
-      writeCountSelect({ fileWriter, dmmf }, model);
-    }
+    // if (model.writeCountArgs()) {
+    //   writeCountArgs({ fileWriter, dmmf }, model);
+    //   writeCountSelect({ fileWriter, dmmf }, model);
+    // }
 
     writeSelect({ fileWriter, dmmf }, model);
 

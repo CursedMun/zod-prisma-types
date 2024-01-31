@@ -18,10 +18,6 @@ export const writeArgs = (
   if (useMultipleFiles && !getSingleFileContent) {
     writeImport('{ z }', 'zod');
     writeImport('type { Prisma }', prismaClientPath);
-    writeImport(
-      `{ ${model.name}SelectSchema }`,
-      `../${inputTypePath}/${model.name}SelectSchema`,
-    );
     if (model.hasRelationField()) {
       writeImport(
         `{ ${model.name}IncludeSchema }`,
@@ -31,23 +27,23 @@ export const writeArgs = (
   }
   writer
     .blankLine()
-    .write(`export const ${model.name}ArgsSchema: `)
+    .write(`const ${model.name}ArgsSchema: `)
     .conditionalWrite(
       (prismaVersion?.major === 5 && prismaVersion?.minor >= 1) ||
         // fallback to newest version of client version cannot be determined
         prismaVersion === undefined,
-      `z.ZodType<Prisma.${model.name}DefaultArgs> = `,
+      // `z.ZodType<Prisma.${model.name}DefaultArgs> = `,
+      `any = `,
     )
     .conditionalWrite(
       (prismaVersion?.major === 5 && prismaVersion?.minor === 0) ||
         prismaVersion?.major === 4,
-      `z.ZodType<Prisma.${model.name}Args> = `,
+      // `z.ZodType<Prisma.${model.name}Args> = `,
+      `any = `,
     )
     .write(`z.object(`)
     .inlineBlock(() => {
       writer
-        .write(`select: `)
-        .write(`z.lazy(() => ${model.name}SelectSchema).optional(),`)
         .newLine()
         .conditionalWrite(
           model.hasRelationField(),

@@ -18,6 +18,9 @@ export const generateSingleFile = ({ dmmf, path }: CreateOptions) => {
     writeSingleFileEnumStatements(dmmf, fileWriter);
     writeSingleFileModelStatements(dmmf, fileWriter);
     writeSingleFileTypeStatements(dmmf, fileWriter);
+    if (dmmf.generatorConfig.onlyModels) {
+      return;
+    }
     writeSingleFileIncludeSelectStatements(dmmf, fileWriter);
     writeSingleFileInputTypeStatements(dmmf, fileWriter);
     writeSingleFileArgTypeStatements(dmmf, fileWriter);

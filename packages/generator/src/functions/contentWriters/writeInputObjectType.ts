@@ -121,11 +121,37 @@ export const writeInputObjectType = (
 
   // when an omit field is present, the type is not a native prism type
   // but a zod union of the native type and an omit type
-  const type = inputType.hasOmitFields()
-    ? `z.ZodType<Omit<Prisma.${
-        inputType.name
-      }, ${inputType.getOmitFieldsUnion()}>>`
-    : `z.ZodType<Prisma.${inputType.name}>`;
+  // const type = inputType.hasOmitFields()
+  //   ? `z.ZodType<Omit<Prisma.${
+  //       inputType.name
+  //     }, ${inputType.getOmitFieldsUnion()}>>`
+  //   : `z.ZodType<Prisma.${inputType.name}>`;
+  const type = 'any';
+  if (inputType.fields.some((x) => x.name === 'AND')) {
+    const type = `any`;
+    writer
+      .blankLine()
+      .write(`export const ${inputType.name}ShortSchema: ${type} = `);
+
+    writer
+      .write(`z.object(`)
+      .inlineBlock(() => {
+        inputType.fields
+          .filter(
+            (x) => x.name !== 'AND' && x.name !== 'OR' && x.name !== 'NOT',
+          )
+          .forEach((field) => {
+            writeInputTypeField({
+              writer,
+              field,
+              writeValidation: addInputTypeValidation,
+              writeComma:
+                field !== inputType.fields[inputType.fields.length - 1],
+            });
+          });
+      })
+      .write(`).strict();`);
+  }
 
   writer.blankLine().write(`export const ${inputType.name}Schema: ${type} = `);
 
@@ -181,21 +207,42 @@ export const writeInputObjectType = (
         .write(`.and(`);
     }
   }
-
-  writer
-    .write(`z.object(`)
-    .inlineBlock(() => {
-      inputType.fields.forEach((field) => {
-        writeInputTypeField({
-          writer,
-          field,
-          writeValidation: addInputTypeValidation,
-          writeComma: field !== inputType.fields[inputType.fields.length - 1],
+  if (inputType.fields.some((x) => x.name === 'AND')) {
+    writer
+      .write(`${inputType.name}ShortSchema.merge(z.object(`)
+      .inlineBlock(() => {
+        inputType.fields
+          .filter((x) => {
+            return x.name === 'AND' || x.name === 'OR' || x.name === 'NOT';
+          })
+          .forEach((field) => {
+            writeInputTypeField({
+              writer,
+              field,
+              writeValidation: addInputTypeValidation,
+              writeComma:
+                field !== inputType.fields[inputType.fields.length - 1],
+            });
+          });
+      })
+      .conditionalWrite(!writeExtendedWhereUniqueInput, `)).strict();`)
+      .conditionalWrite(writeExtendedWhereUniqueInput, `)).strict());`);
+  } else {
+    writer
+      .write(`z.object(`)
+      .inlineBlock(() => {
+        inputType.fields.forEach((field) => {
+          writeInputTypeField({
+            writer,
+            field,
+            writeValidation: addInputTypeValidation,
+            writeComma: field !== inputType.fields[inputType.fields.length - 1],
+          });
         });
-      });
-    })
-    .conditionalWrite(!writeExtendedWhereUniqueInput, `).strict();`)
-    .conditionalWrite(writeExtendedWhereUniqueInput, `).strict());`);
+      })
+      .conditionalWrite(!writeExtendedWhereUniqueInput, `).strict();`)
+      .conditionalWrite(writeExtendedWhereUniqueInput, `).strict());`);
+  }
 
   if (useMultipleFiles && !getSingleFileContent) {
     writer.blankLine().writeLine(`export default ${inputType.name}Schema;`);

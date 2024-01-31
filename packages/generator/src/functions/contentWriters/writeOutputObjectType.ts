@@ -9,7 +9,7 @@ export const writeOutputObjectType = (
 ) => {
   const { writer, writeImportSet, writeHeading } = fileWriter;
 
-  const { useMultipleFiles } = dmmf.generatorConfig;
+  const { useMultipleFiles, findFirst } = dmmf.generatorConfig;
 
   if (useMultipleFiles && !getSingleFileContent) {
     writeImportSet(field.argTypeImports);
@@ -59,20 +59,29 @@ export const writeOutputObjectType = (
   if (field.name.match(/updatetoone/gi)) {
     return;
   }
-  // console.log(field.name);
-  // console.log(field.argName);
+  // findManyChat;
+  const fieldName = field.name.replace('findMany', '');
+
+  // ChatFindManyArgs;
+  const baseType = `Pick<Prisma.${fieldName}FindManyArgs, ${
+    field.writeIncludeArg ? `'include' |` : ''
+  } 'where' | 'orderBy' | 'take' | 'skip'>`;
+
+  writer.blankLine().write(`export type T${field.argName} = ${baseType}`);
+  const type = `z.ZodType<T${field.argName}>`;
+
   writer
     .blankLine()
-    .write(`export const ${field.argName}Schema `)
+    .write(`export const ${field.argName}Schema: ${type}`)
     // .write(field.customArgType)
     .write(` = `)
     .write(`z.object(`)
     .inlineBlock(() => {
       writer
-        .conditionalWriteLine(
-          field.writeSelectArg,
-          `select: ${field.modelType}SelectSchema.optional(),`,
-        )
+        // .conditionalWriteLine(
+        //   field.writeSelectArg,
+        //   `select: ${field.modelType}SelectSchema.optional(),`,
+        // )
         .conditionalWriteLine(
           field.writeIncludeArg,
           `include: ${field.modelType}IncludeSchema.optional(),`,
@@ -139,6 +148,17 @@ export const writeOutputObjectType = (
     })
     .write(`).strict()`);
 
+  if (findFirst) {
+    writer.blankLine().writeLine(`export type T${fieldName}FindFirstArgs = Omit<
+    T${field.argName}, 'take' | 'skip'>`);
+    const type = `z.ZodType<T${field.argName}>`;
+
+    writer
+      .blankLine()
+      .writeLine(`export const ${fieldName}FindFirstSchema: ${type}`)
+      .write(` = `)
+      .write(`${field.argName}Schema.omit({ take: true, skip: true })`);
+  }
   if (useMultipleFiles && !getSingleFileContent) {
     writer.blankLine().writeLine(`export default ${field.argName}Schema;`);
   }

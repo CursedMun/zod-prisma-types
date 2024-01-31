@@ -18,6 +18,9 @@ const notAllowedMethods = [
   'updateone',
   'updatetoone',
   'byaggregate',
+  'wherewithaggregatesinput',
+  'withaggregatesfilter',
+  'without',
 ];
 export const writeSingleFileInputTypeStatements: WriteStatements = (
   dmmf,
@@ -37,6 +40,9 @@ export const writeSingleFileInputTypeStatements: WriteStatements = (
     if (
       notAllowedMethods.some((x) => inputType.name.toLowerCase().includes(x))
     ) {
+      return;
+    }
+    if (inputType.name.toLowerCase().includes('scalar')) {
       return;
     }
     writeInputObjectType({ dmmf, fileWriter }, inputType);

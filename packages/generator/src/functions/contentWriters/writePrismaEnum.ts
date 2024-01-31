@@ -14,7 +14,8 @@ export const writePrismaEnum = (
   if (useMultipleFiles && !getSingleFileContent) {
     writeImport('{ z }', 'zod');
   }
-
+  if (name !== 'SortOrder' && name !== 'QueryMode' && name !== 'NullsOrder')
+    return;
   if (useNativeEnum) {
     writer.blankLine().write(`export const ${name}Schema = z.enum([`);
     values.forEach((value, idx) => {

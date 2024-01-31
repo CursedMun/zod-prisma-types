@@ -1,5 +1,5 @@
-import { writeCustomEnum, writePrismaEnum } from '.';
 import { type WriteStatements } from '../types';
+import { writeCustomEnum, writePrismaEnum } from './contentWriters';
 
 /////////////////////////////////////////////////
 // FUNCTION

@@ -14,7 +14,7 @@ export const writeCountSelect = (
   model: ExtendedDMMFOutputType,
 ) => {
   const { useMultipleFiles, prismaClientPath } = dmmf.generatorConfig;
-
+  return;
   if (useMultipleFiles && !getSingleFileContent) {
     writeImport('{ z }', 'zod');
     writeImport('type { Prisma }', prismaClientPath);

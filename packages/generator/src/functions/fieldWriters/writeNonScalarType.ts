@@ -22,8 +22,17 @@ export const writeNonScalarType: WriteTypeFunction<WriteTypeOptions> = (
   const nonScalarType = inputType.getZodNonScalarType();
   if (!nonScalarType) return;
 
+  // console.log({
+  //   nonScalarType,
+  //   includes: nonScalarType.toString().includes('WhereInput'),
+  // });
   return writer
-    .conditionalWrite(writeLazy, `z.lazy(() => ${nonScalarType}Schema)`)
+    .conditionalWrite(
+      writeLazy,
+      `z.lazy(() => ${nonScalarType}${
+        nonScalarType.toString().includes('WhereInput') ? 'Short' : ''
+      }Schema)`,
+    )
     .conditionalWrite(!writeLazy, `${nonScalarType}Schema`)
     .conditionalWrite(inputType.isList, `.array()`)
     .conditionalWrite(isOptional, `.optional()`)
