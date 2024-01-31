@@ -151,7 +151,7 @@ export const writeOutputObjectType = (
   if (findFirst) {
     writer.blankLine().writeLine(`export type T${fieldName}FindFirstArgs = Omit<
     T${field.argName}, 'take' | 'skip'>`);
-    const type = `z.ZodType<T${fieldName}FindFirstArgs>`;
+    const type = `z.ZodType<Partial<T${fieldName}FindFirstArgs>>`;
 
     writer
       .blankLine()
