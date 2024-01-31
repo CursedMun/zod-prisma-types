@@ -157,7 +157,9 @@ export const writeOutputObjectType = (
       .blankLine()
       .writeLine(`export const ${fieldName}FindFirstSchema: ${type}`)
       .write(` = `)
-      .write(`${field.argName}Schema.omit({ take: true, skip: true })`);
+      .write(
+        `(${field.argName}Schema as any).omit({ take: true, skip: true })`,
+      );
   }
   if (useMultipleFiles && !getSingleFileContent) {
     writer.blankLine().writeLine(`export default ${field.argName}Schema;`);
